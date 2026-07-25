@@ -220,7 +220,7 @@ github-copilot-python/
 Clone the repository
 
 ```bash
-git clone https://github.com/manojabhi61/github-copilot-python.git
+git clone https://github.com/Sushmitha-U-Bidari/github-copilot-python.git
 ```
 
 Move into the project

@@ -1,4 +1,15 @@
-// Client-side rendering and interaction for the Flask-backed Sudoku
+/**
+ * Client-side logic for the Flask-based Sudoku application.
+ *
+ * Responsibilities:
+ * - Render the Sudoku board
+ * - Handle user interactions
+ * - Manage the game timer
+ * - Process hints and solution checks
+ * - Maintain the leaderboard using Local Storage
+ * - Support Dark Mode
+ */
+
 const SIZE = 9;
 const THEME_STORAGE_KEY = 'sudoku-theme';
 const LEADERBOARD_STORAGE_KEY = 'sudoku-leaderboard';
@@ -8,6 +19,7 @@ let elapsedSeconds = 0;
 let hintsUsed = 0;
 let hasCompletedGame = false;
 
+// Apply the selected visual theme and save the preference.
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem(THEME_STORAGE_KEY, theme);
@@ -39,6 +51,8 @@ function normalizeLeaderboardEntry(entry) {
 }
 
 function getLeaderboardEntries() {
+
+  // Return an empty leaderboard if stored data is missing or invalid.
   try {
     const rawEntries = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
     if (!rawEntries) {
@@ -88,6 +102,7 @@ function updateTimerDisplay() {
   timerElement.textContent = `Time: ${formatTimerDisplay()}`;
 }
 
+// Display the Top 10 completed games stored in Local Storage.
 function renderLeaderboard() {
   const leaderboardBody = document.getElementById('leaderboard-body');
   if (!leaderboardBody) {
@@ -178,6 +193,7 @@ function recordLeaderboardEntry() {
   hasCompletedGame = true;
 }
 
+// Start the game timer and update it every second.
 function startTimer() {
   if (timerInterval !== null) {
     clearInterval(timerInterval);
@@ -203,6 +219,7 @@ function resetGameState() {
   hasCompletedGame = false;
 }
 
+// Dynamically create the 9×9 Sudoku grid.
 function createBoardElement() {
   const boardDiv = document.getElementById('sudoku-board');
   boardDiv.innerHTML = '';
@@ -271,6 +288,11 @@ function applyBoardHighlightState(inputs, incorrect, correct) {
   }
 }
 
+// Display the generated Sudoku puzzle on the page.
+/**
+ * Render the Sudoku puzzle in the browser.
+ * @param {number[][]} puz Generated Sudoku puzzle.
+ */
 function renderPuzzle(puz) {
   puzzle = puz;
   createBoardElement();
@@ -294,6 +316,7 @@ function renderPuzzle(puz) {
   }
 }
 
+// Read the current values entered by the player.
 function getBoard() {
   const boardDiv = document.getElementById('sudoku-board');
   const inputs = boardDiv.getElementsByTagName('input');
@@ -337,6 +360,7 @@ async function maybeAutoCompletePuzzle() {
   await checkSolution({silent: true});
 }
 
+// Fill one empty cell with the correct value returned by the server.
 function applyHint(row, col, value) {
   const boardDiv = document.getElementById('sudoku-board');
   const inputs = boardDiv.getElementsByTagName('input');
@@ -354,6 +378,7 @@ function applyHint(row, col, value) {
   maybeAutoCompletePuzzle();
 }
 
+// Request a new Sudoku puzzle from the Flask backend.
 async function newGame() {
   const difficultySelect = document.getElementById('difficulty-select');
   const difficulty = difficultySelect.value;
@@ -365,6 +390,7 @@ async function newGame() {
   document.getElementById('message').innerText = '';
 }
 
+// Compare the player's board with the correct solution.
 async function checkSolution(options = {}) {
   const {silent = false} = options;
   const boardDiv = document.getElementById('sudoku-board');
@@ -405,6 +431,7 @@ async function checkSolution(options = {}) {
   }
 }
 
+// Request a hint from the backend.
 async function getHint() {
   const board = getBoard();
 
@@ -428,7 +455,7 @@ async function getHint() {
   msg.innerText = 'Hint used.';
 }
 
-// Wire buttons
+// Initialize the application after the page loads.
 window.addEventListener('load', () => {
   initializeTheme();
   renderLeaderboard();

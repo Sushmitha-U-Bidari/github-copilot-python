@@ -2,26 +2,33 @@
 
 ## Project Overview
 
-This project is an enhanced version of the original Flask-based Sudoku application provided as part of the GitHub Copilot learning assignment. The application was refactored and extended using GitHub Copilot to improve code quality, user experience, backend validation, automated testing, and gameplay functionality while preserving the original application architecture.
+This project is an enhanced version of a Flask-based Sudoku web
+application developed as part of a GitHub Copilot learning assignment.
+The application was refactored and extended using GitHub Copilot while
+ensuring that every AI-generated suggestion was manually reviewed,
+tested, and refined before being accepted.
 
-The project demonstrates how GitHub Copilot can assist throughout the software development lifecycle, including code refactoring, feature implementation, debugging, testing, and documentation. Every Copilot-generated suggestion was reviewed, validated, and refined before being accepted into the codebase.
+The project demonstrates modern software development practices including
+modular design, backend validation, automated testing, responsive user
+interface development, and responsible AI-assisted programming.
 
----
+------------------------------------------------------------------------
 
 # Project Objectives
 
 The primary objectives of this project were to:
 
-- Refactor the existing Sudoku application while maintaining functionality.
-- Improve code readability and maintainability.
-- Implement additional gameplay features.
-- Improve backend request validation.
-- Enhance the user interface.
-- Increase automated test coverage.
-- Demonstrate responsible usage of GitHub Copilot.
-- Produce a production-ready Sudoku web application.
+-   Refactor an existing Sudoku application while preserving its core
+    functionality.
+-   Improve code readability, maintainability, and modularity.
+-   Implement additional gameplay features.
+-   Improve backend request validation and error handling.
+-   Enhance the overall user experience.
+-   Increase automated test coverage.
+-   Demonstrate responsible GitHub Copilot usage.
+-   Produce a production-ready Sudoku web application.
 
----
+------------------------------------------------------------------------
 
 # Features
 
@@ -29,173 +36,227 @@ The primary objectives of this project were to:
 
 ### Difficulty Selection
 
-The application supports three difficulty levels:
+Supports three difficulty levels:
 
-- Easy
-- Medium
-- Hard
+-   Easy
+-   Medium
+-   Hard
 
-Each difficulty level generates Sudoku puzzles with a different number of prefilled cells while ensuring a unique solution.
-
----
+Each difficulty level generates Sudoku puzzles with different numbers of
+prefilled cells while ensuring a unique solution.
 
 ### Unique Sudoku Puzzle Generation
 
-Every generated puzzle is validated to ensure that only one valid solution exists. This prevents ambiguous Sudoku boards and improves gameplay quality.
-
----
+Each generated Sudoku board is validated to ensure it has exactly one
+valid solution.
 
 ### Hint System
 
-The Hint feature provides assistance by revealing one correct value at a time.
-
-Features include:
-
-- Fills only an empty cell
-- Never overwrites player-entered values
-- Locks hinted cells after insertion
-- Tracks the total number of hints used
-
----
+-   Reveals one correct value at a time
+-   Fills only empty cells
+-   Never overwrites player-entered values
+-   Locks hinted cells
+-   Tracks hint usage
 
 ### Check Solution
 
-Players can verify their current progress without revealing the complete puzzle solution.
+Players can validate their progress without revealing the complete
+solution.
 
-The application:
+Features include:
 
-- Validates entered values
-- Highlights incorrect entries
-- Highlights correct entries
-- Allows continued gameplay
-
----
+-   Detect incorrect entries
+-   Highlight correct entries
+-   Continue gameplay after checking
 
 ### Automatic Puzzle Completion
 
-The application automatically detects when the puzzle has been solved correctly.
+When the puzzle is solved correctly:
 
-When completed:
-
-- Timer stops automatically
-- Congratulations message appears
-- Leaderboard updates automatically
-
----
+-   Timer stops automatically
+-   Congratulations message is displayed
+-   Leaderboard updates automatically
 
 ### Timer
 
-A built-in timer records the total puzzle completion time.
+-   Starts automatically
+-   Updates every second
+-   Stops after successful completion
 
-The timer:
+### Leaderboard
 
-- Starts automatically
-- Updates continuously
-- Stops immediately after puzzle completion
+Stores the Top 10 fastest completed games.
 
----
+Each record contains:
 
-## Leaderboard
+-   Player Name
+-   Completion Time
+-   Difficulty
+-   Hint Count
 
-The application maintains a Top 10 leaderboard.
+Leaderboard data is stored using browser Local Storage and persists
+after page refresh.
 
-Each record stores:
+------------------------------------------------------------------------
 
-- Player Name
-- Completion Time
-- Difficulty Level
-- Hint Count
+# Validation Features
 
-Leaderboard Features:
+## Real-Time Validation
 
-- Automatically updates after puzzle completion
-- Persists using browser Local Storage
-- Keeps only the fastest ten completed games
-- Survives browser refreshes
+The application validates user input while playing and highlights
+incorrect values immediately.
 
----
+## Conflict Detection
 
-## Validation Features
+Conflicts are detected in:
 
-### Real-Time Validation
+-   Rows
+-   Columns
+-   3×3 sub-grids
 
-Player input is validated immediately.
-
-Incorrect entries are highlighted automatically.
-
-Highlights disappear after correction.
-
----
-
-### Conflict Detection
-
-Conflicting numbers are detected for:
-
-- Rows
-- Columns
-- 3×3 Sub-grids
-
----
-
-### Backend Validation
+## Backend Validation
 
 The Flask backend validates:
 
-- Missing JSON requests
-- Invalid board sizes
-- Invalid board values
-- Malformed requests
+-   Missing JSON requests
+-   Missing Sudoku board
+-   Invalid board dimensions
+-   Invalid board values
+-   Malformed requests
 
-Proper HTTP error responses are returned whenever invalid data is received.
+Appropriate HTTP status codes and JSON error responses are returned.
 
----
+------------------------------------------------------------------------
 
-## User Interface
+# Modular and Reusable Components
+
+The project follows a modular architecture where each component has a
+single responsibility.
+
+## app.py
+
+Responsible for:
+
+-   Flask route handling
+-   HTTP request processing
+-   Request validation
+-   Calling reusable Sudoku helper functions
+-   Returning JSON responses
+
+Business logic is separated from routing logic.
+
+## sudoku_logic.py
+
+Contains reusable Sudoku algorithms including:
+
+-   Puzzle generation
+-   Sudoku solving
+-   Board validation
+-   Safe move checking
+-   Unique solution verification
+
+These functions are reused throughout the application, reducing
+duplicate code.
+
+## static/main.js
+
+Handles all client-side functionality including:
+
+-   Timer updates
+-   Hint requests
+-   Solution checking
+-   Live validation
+-   Leaderboard management
+-   Dark mode
+-   User interaction
+
+## templates/index.html
+
+Contains only the presentation layer.
+
+Separating presentation from backend logic improves maintainability.
+
+------------------------------------------------------------------------
+
+# Error Handling
+
+The application uses defensive programming techniques to improve
+reliability.
+
+## Request Validation
+
+Every request is validated before processing by checking:
+
+-   JSON body exists
+-   Board is provided
+-   Board contains 9 rows
+-   Every row contains 9 columns
+-   Cell values are valid
+
+## API Error Handling
+
+Invalid requests return descriptive JSON responses with appropriate HTTP
+status codes.
+
+Examples include:
+
+-   Missing JSON
+-   Missing board
+-   Invalid board size
+-   Invalid values
+
+## Defensive Programming
+
+All user input is validated before Sudoku algorithms execute, preventing
+runtime failures.
+
+------------------------------------------------------------------------
+
+# User Interface
 
 The application includes:
 
-- Responsive Layout
-- Dark Mode
-- Improved Leaderboard
-- Improved Control Layout
-- Better Mobile Support
-- Clean Sudoku Board
-- Better User Feedback
+-   Responsive layout
+-   Dark mode
+-   Improved leaderboard
+-   Mobile-friendly design
+-   Clean Sudoku board
+-   Better user feedback
 
----
+------------------------------------------------------------------------
 
 # Technologies Used
 
 ## Backend
 
-- Python
-- Flask
+-   Python
+-   Flask
 
 ## Frontend
 
-- HTML5
-- CSS3
-- JavaScript
-- Bootstrap
+-   HTML5
+-   CSS3
+-   JavaScript
+-   Bootstrap
 
 ## Testing
 
-- Pytest
+-   Pytest
 
 ## Version Control
 
-- Git
-- GitHub
+-   Git
+-   GitHub
 
 ## AI Development
 
-- GitHub Copilot
+-   GitHub Copilot
 
----
+------------------------------------------------------------------------
 
 # Project Structure
 
-```
+``` text
 github-copilot-python/
 │
 ├── starter/
@@ -206,233 +267,221 @@ github-copilot-python/
 │   ├── templates/
 │   ├── static/
 │   ├── tests/
-│   └── ...
 │
 ├── README.md
 ├── LICENSE.txt
 └── CODEOWNERS
 ```
 
----
+------------------------------------------------------------------------
 
 # Installation
 
-Clone the repository
-
-```bash
+``` bash
 git clone https://github.com/Sushmitha-U-Bidari/github-copilot-python.git
-```
-
-Move into the project
-
-```bash
 cd github-copilot-python/starter
-```
 
-Create a virtual environment
-
-```bash
 python -m venv venv
-```
 
-Activate the environment
-
-### Windows
-
-```bash
+# Windows
 venv\Scripts\activate
-```
 
-### Linux / macOS
-
-```bash
+# Linux/macOS
 source venv/bin/activate
-```
 
-Install required packages
-
-```bash
 pip install -r requirements.txt
 ```
 
----
+------------------------------------------------------------------------
 
 # Running the Application
 
-Start the Flask server
-
-```bash
+``` bash
 python app.py
 ```
 
-Open your browser and visit
+Open:
 
-```
+``` text
 http://127.0.0.1:5000
 ```
 
----
+------------------------------------------------------------------------
 
 # Running Automated Tests
 
-Execute all automated tests
-
-```bash
+``` bash
 python -m pytest -q
 ```
 
-Expected Result
+Expected output:
 
-```
+``` text
 16 passed
 ```
 
----
+------------------------------------------------------------------------
 
 # Manual Testing Checklist
 
-Verify the following functionality:
+Verify:
 
-- Difficulty selection
-- New Game generation
-- Hint functionality
-- Check Solution
-- Invalid move highlighting
-- Conflict highlighting
-- Automatic puzzle completion
-- Congratulations message
-- Timer start and stop
-- Leaderboard update
-- Leaderboard persistence
-- Top 10 leaderboard
-- Dark mode
-- Responsive layout
+-   Difficulty selection
+-   New Game generation
+-   Hint functionality
+-   Check Solution
+-   Live validation
+-   Conflict highlighting
+-   Puzzle completion
+-   Congratulations message
+-   Timer
+-   Leaderboard
+-   Leaderboard persistence
+-   Dark mode
+-   Responsive layout
 
----
+------------------------------------------------------------------------
 
 # GitHub Copilot Usage
 
-GitHub Copilot was used during the development process for:
+GitHub Copilot assisted with:
 
-- Refactoring Python code
-- Generating Flask routes
-- Improving Sudoku algorithms
-- Writing JavaScript logic
-- Enhancing HTML
-- Improving CSS
-- Creating automated tests
-- Debugging application issues
-- Backend validation
-- UI improvements
+-   Refactoring Python code
+-   Flask route generation
+-   Sudoku algorithms
+-   JavaScript development
+-   HTML and CSS improvements
+-   Automated tests
+-   Backend validation
+-   Debugging
 
-All AI-generated code was reviewed before acceptance.
+Every Copilot suggestion was manually reviewed, tested, refined, or
+rejected where necessary before being merged into the final
+implementation.
 
-Whenever necessary:
-
-- Suggestions were refined
-- Suggestions were modified
-- Suggestions were rejected if incorrect
-
-The final implementation reflects developer-reviewed and tested code.
-
----
+------------------------------------------------------------------------
 
 # Testing Strategy
-
-The project combines:
 
 ## Automated Testing
 
 Pytest verifies:
 
-- Sudoku generation
-- Difficulty generation
-- Hint API
-- Check API
-- Backend validation
-- Board validation
-- Invalid request handling
+-   Sudoku generation
+-   Difficulty generation
+-   Hint API
+-   Check API
+-   Backend validation
+-   Invalid request handling
 
-Current Status
+Current status:
 
+``` text
+16 tests passed
 ```
-16 Tests Passed
-```
-
----
 
 ## Manual Testing
 
-The following features were manually verified:
+Verified:
 
-- Gameplay
-- Hint correctness
-- Leaderboard
-- Timer
-- Responsive layout
-- Dark mode
-- Local Storage persistence
+-   Gameplay
+-   Hint correctness
+-   Timer
+-   Leaderboard
+-   Responsive layout
+-   Dark mode
+-   Local Storage persistence
 
----
+## Successful Build Verification
+
+The application was validated after every major refactoring by:
+
+-   Running the Flask application locally
+-   Executing all automated tests
+-   Testing gameplay manually
+
+This confirmed that refactoring did not introduce regressions.
+
+------------------------------------------------------------------------
 
 # Screenshots
 
-The repository contains screenshots demonstrating:
+Include screenshots demonstrating:
 
-- GitHub Copilot prompts
-- GitHub Copilot responses
-- Refactoring process
-- Feature implementation
-- Automated testing
-- Running application
-- Leaderboard
-- Hint functionality
-- Puzzle completion
+-   GitHub Copilot prompts
+-   GitHub Copilot responses
+-   Refactoring
+-   Running application
+-   Automated testing
+-   Hint feature
+-   Leaderboard
+-   Puzzle completion
 
----
+------------------------------------------------------------------------
 
 # Documentation
 
 Additional implementation details are available in:
 
-```
+``` text
 starter/instruction.md
 ```
 
----
+Code comments have been added to explain Sudoku generation, backend
+validation, Flask routes, timer logic, leaderboard updates, and
+JavaScript event handling.
+
+------------------------------------------------------------------------
+
+# Live Demo
+
+After deployment, add your Render URL here:
+
+``` text
+https://github-copilot-python-sushmitha-u-bidari.onrender.com
+```
+
+------------------------------------------------------------------------
 
 # Learning Outcomes
 
-This project demonstrates practical experience with:
+This project demonstrates experience with:
 
-- Flask web development
-- Python programming
-- Frontend integration
-- Automated testing using Pytest
-- Git version control
-- GitHub workflow
-- AI-assisted software development using GitHub Copilot
-- Code refactoring
-- Prompt engineering
-- Software debugging
+-   Flask web development
+-   Python programming
+-   Frontend integration
+-   Automated testing using Pytest
+-   Git and GitHub
+-   GitHub Copilot
+-   Code refactoring
+-   Prompt engineering
+-   Modular software design
+-   Backend API validation
+-   Error handling
+-   Software debugging
 
----
+------------------------------------------------------------------------
 
 # Future Enhancements
 
-Potential future improvements include:
+Potential improvements include:
 
-- User authentication
-- Online leaderboard
-- Multiple Sudoku board sizes
-- Save and resume games
-- Sound effects
-- Keyboard shortcuts
-- Theme customization
-- Accessibility improvements
+-   User authentication
+-   Online leaderboard
+-   Save and resume games
+-   Multiple Sudoku board sizes
+-   Accessibility improvements
+-   Keyboard shortcuts
+-   Theme customization
 
----
+------------------------------------------------------------------------
 
 # Conclusion
 
-The original Sudoku application has been successfully transformed into a feature-rich, responsive, and well-tested web application. GitHub Copilot played an important role throughout development by assisting with refactoring, feature implementation, testing, debugging, and documentation. Every AI-generated suggestion was carefully reviewed and validated, resulting in a reliable, maintainable, and user-friendly Sudoku application.
+This project successfully transforms the original Sudoku application
+into a feature-rich, responsive, modular, and well-tested web
+application. GitHub Copilot supported development throughout the
+project, while all generated code was carefully reviewed, tested, and
+refined. The final application demonstrates good software engineering
+practices, reliable backend validation, automated testing, and an
+improved user experience.

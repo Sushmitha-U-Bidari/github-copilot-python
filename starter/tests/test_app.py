@@ -1,21 +1,41 @@
+"""
+Automated test suite for the Sudoku Flask application.
+
+These tests verify:
+- Flask application startup
+- Sudoku puzzle generation
+- Difficulty selection
+- Hint functionality
+- Solution validation
+- Error handling
+- API endpoint behavior
+"""
+
 import pytest
 
 import sudoku_logic
 from app import app, CURRENT, is_valid_board
 
-
+# --------------------------------------------------------
+# Test Fixture
+# --------------------------------------------------------
+# Flask test client used by all test cases.
 @pytest.fixture()
 def client():
     app.config.update(TESTING=True)
     with app.test_client() as client:
         yield client
 
-
+# ----------------------------------------------------
+# Flask Application Tests
+# ----------------------------------------------------
 def test_flask_app_starts_correctly(client):
     assert client is not None
     assert app.name == "app"
 
-
+# ----------------------------------------------------
+# Home Page Tests
+# ----------------------------------------------------
 def test_home_page_loads_successfully(client):
     response = client.get("/")
     assert response.status_code == 200
@@ -23,13 +43,15 @@ def test_home_page_loads_successfully(client):
     assert b'"player-name"' in response.data
     assert b"Top 10 Leaderboard" in response.data
     assert b'id="leaderboard-table"' in response.data
-    assert b"<th>Rank</th>" in response.data
-    assert b"<th>Name</th>" in response.data
-    assert b"<th>Time</th>" in response.data
-    assert b"<th>Level</th>" in response.data
-    assert b"<th>Hints</th>" in response.data
+    assert b'<th scope="col">Rank</th>' in response.data
+    assert b'<th scope="col">Name</th>' in response.data
+    assert b'<th scope="col">Time</th>' in response.data
+    assert b'<th scope="col">Level</th>' in response.data
+    assert b'<th scope="col">Hints</th>' in response.data
 
-
+# --------------------------------------------------------
+# Core Application Route Tests
+# --------------------------------------------------------
 def test_existing_application_routes_still_work_without_logic_changes(client):
     response = client.get("/new?clues=35")
     assert response.status_code == 200
@@ -52,7 +74,9 @@ def test_existing_application_routes_still_work_without_logic_changes(client):
     assert "correct" in result
     assert isinstance(result["correct"], list)
 
-
+# --------------------------------------------------------
+# Input Validation Tests
+# --------------------------------------------------------
 def test_check_route_returns_400_for_missing_or_malformed_board(client):
     response = client.post("/check", data="not-json", content_type="application/json")
     assert response.status_code == 400
@@ -125,7 +149,9 @@ def test_check_route_returns_400_for_invalid_cell_values(client):
     assert response.get_json() == {"error": "A 9x9 board is required"}
     assert not is_valid_board(invalid_board)
 
-
+# --------------------------------------------------------
+# Difficulty Level Tests
+# --------------------------------------------------------
 def test_new_endpoint_accepts_difficulty_parameter(client):
     response = client.get("/new?difficulty=easy")
     assert response.status_code == 200
@@ -150,7 +176,9 @@ def test_difficulty_parameter_changes_prefilled_cell_counts(client):
 
     assert easy_clues > medium_clues > hard_clues
 
-
+# --------------------------------------------------------
+# Puzzle Generation Tests
+# --------------------------------------------------------
 def test_generated_puzzle_has_exactly_one_solution():
     puzzle, _ = sudoku_logic.generate_puzzle(35)
     solution_count = sudoku_logic.count_solutions(
@@ -160,7 +188,9 @@ def test_generated_puzzle_has_exactly_one_solution():
 
     assert solution_count == 1
 
-
+# --------------------------------------------------------
+# Hint Feature Tests
+# --------------------------------------------------------
 def test_hint_route_fills_exactly_one_empty_cell(client):
     response = client.get("/new?difficulty=easy")
     assert response.status_code == 200
@@ -220,7 +250,9 @@ def test_hint_route_uses_the_player_board_and_does_not_overwrite_existing_value(
     assert (data["row"], data["col"]) != first_empty
     assert player_board[first_empty[0]][first_empty[1]] == 5
 
-
+# --------------------------------------------------------
+# Solution Validation Tests
+# --------------------------------------------------------
 def test_check_route_reports_incorrect_and_correct_user_cells(client):
     client.get("/new?difficulty=easy")
 
